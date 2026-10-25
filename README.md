@@ -1,22 +1,26 @@
 
-# Paradise Nursery 🌿
+# Paradise Nursery — e-plantShopping
 
-Paradise Nursery is an online plant shopping application built with React and Redux Toolkit. It allows users to browse houseplants, add plants to their shopping cart, update quantities, and calculate the total price.
+Paradise Nursery is a React and Redux Toolkit shopping application for an online houseplant store.
 
 ## Features
 
-- Responsive landing page
+- Landing page with a background image
 - About Us section
-- Plant catalog with three categories
-- 18 unique houseplants
-- Add to Cart functionality
-- Dynamic cart item count
-- Increase and decrease product quantities
-- Remove products from the cart
-- Automatic price calculations
-- Continue Shopping and Checkout buttons
+- Plant catalog organized into three categories
+- At least six plants per category
+- Product images, descriptions, and prices
+- Add to Cart buttons that disable after adding
+- Shared navigation for Home, Plants, and Cart
+- Dynamic shopping cart item count
+- Increase and decrease item quantities
+- Delete products from the shopping cart
+- Individual item totals and overall cart total
+- Checkout Coming Soon message
+- Continue Shopping navigation
+- Responsive CSS styling
 
-## Technologies Used
+## Technologies
 
 - React
 - JavaScript
@@ -25,20 +29,20 @@ Paradise Nursery is an online plant shopping application built with React and Re
 - CSS
 - Vite
 
-## Plant Categories
+## Project Structure
 
-1. Air Purifying Plants
-2. Low Maintenance Plants
-3. Decorative Plants
+- `src/App.jsx` — Application pages and navigation
+- `src/App.css` — Landing page, product, and cart styles
+- `src/components/AboutUs.jsx` — Company information
+- `src/components/ProductList.jsx` — Plant catalog and navbar
+- `src/components/CartItem.jsx` — Shopping cart
+- `src/redux/CartSlice.jsx` — Shopping cart state and reducers
+- `src/main.jsx` — React and Redux entry point
 
-## Project Purpose
+## Project Name
 
-This project demonstrates the use of React components, state management with Redux, reusable UI elements, and shopping cart functionality.
+Paradise Nursery (e-plantShopping)
 
-## Getting Started
+## Purpose
 
-Install the project dependencies and run the development server using Vite.
-
-## Author
-
-Paradise Nursery Project
+This project demonstrates component-based UI development and Redux state management for a simple online shopping experience.
