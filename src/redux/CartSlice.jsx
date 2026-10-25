@@ -11,8 +11,9 @@ const cartSlice = createSlice({
   reducers: {
     addItem: (state, action) => {
       const product = action.payload;
+
       const existingItem = state.items.find(
-        (item) => item.id === product.id
+        (item) => item.name === product.name
       );
 
       if (existingItem) {
@@ -26,31 +27,32 @@ const cartSlice = createSlice({
     },
 
     removeItem: (state, action) => {
-      const productId =
-        typeof action.payload === "object"
-          ? action.payload.id
-          : action.payload;
+      const target = action.payload;
+      const targetName =
+        typeof target === "object" ? target.name : target;
 
       state.items = state.items.filter(
-        (item) => item.id !== productId
+        (item) => item.name !== targetName && item.id !== target
       );
     },
 
     updateQuantity: (state, action) => {
-      const { id, quantity } = action.payload;
+      const { id, name, quantity } = action.payload;
 
       const item = state.items.find(
-        (product) => product.id === id
+        (product) =>
+          (id !== undefined && product.id === id) ||
+          (name !== undefined && product.name === name)
       );
 
-      if (item) {
-        if (quantity <= 0) {
-          state.items = state.items.filter(
-            (product) => product.id !== id
-          );
-        } else {
-          item.quantity = quantity;
-        }
+      if (!item) return;
+
+      if (quantity <= 0) {
+        state.items = state.items.filter(
+          (product) => product !== item
+        );
+      } else {
+        item.quantity = quantity;
       }
     },
   },
