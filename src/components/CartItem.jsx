@@ -6,16 +6,16 @@ import {
   updateQuantity,
 } from "../redux/CartSlice";
 
-export default function CartItem({ onContinueShopping }) {
+export default function CartItem({ onContinueShopping = () => {} }) {
   const dispatch = useDispatch();
-  const items = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart.items);
 
-  const totalAmount = items.reduce(
+  const totalAmount = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  const totalItems = items.reduce(
+  const totalItems = cart.reduce(
     (total, item) => total + item.quantity,
     0
   );
@@ -23,19 +23,53 @@ export default function CartItem({ onContinueShopping }) {
   const getImageUrl = (image) =>
     `https://images.unsplash.com/${image}?auto=format&fit=crop&w=400&q=80`;
 
-  const handleCheckout = () => {
-    window.alert("Thank you for shopping with Paradise Nursery! Checkout is Coming Soon.");
+  const handleIncrement = (item) => {
+    dispatch(
+      updateQuantity({
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity + 1,
+      })
+    );
   };
 
-  if (items.length === 0) {
+  const handleDecrement = (item) => {
+    if (item.quantity <= 1) {
+      dispatch(removeItem(item.name));
+    } else {
+      dispatch(
+        updateQuantity({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity - 1,
+        })
+      );
+    }
+  };
+
+  const handleDelete = (item) => {
+    dispatch(removeItem(item.name));
+  };
+
+  const handleCheckout = () => {
+    window.alert("Checkout Coming Soon! Thank you for shopping with Paradise Nursery.");
+  };
+
+  const handleContinueShopping = (e) => {
+    e.preventDefault();
+    onContinueShopping();
+    window.scrollTo(0, 0);
+  };
+
+  if (cart.length === 0) {
     return (
       <main className="cart-page">
         <div className="empty-cart">
           <h1 className="page-heading">Your Shopping Cart</h1>
-          <p>Your cart is looking a little empty. Let's add some greenery!</p>
+          <p>Your cart is empty. Let's find a plant for your home!</p>
           <button
-            className="primary-btn"
-            onClick={onContinueShopping}
+            className="get-started-button"
+            onClick={handleContinueShopping}
           >
             Continue Shopping
           </button>
@@ -46,14 +80,14 @@ export default function CartItem({ onContinueShopping }) {
 
   return (
     <main className="cart-page">
-      <h1 className="page-heading">Your Shopping Cart 🛒</h1>
+      <h1 className="page-heading">Shopping Cart</h1>
       <p className="page-intro">
         You have {totalItems} item{totalItems !== 1 ? "s" : ""} in your cart.
       </p>
 
       <div className="cart-layout">
-        <section>
-          {items.map((item) => (
+        <section className="cart-container">
+          {cart.map((item) => (
             <article className="cart-row" key={item.id}>
               <img
                 className="cart-image"
@@ -63,35 +97,24 @@ export default function CartItem({ onContinueShopping }) {
 
               <div className="cart-details">
                 <h3>{item.name}</h3>
-                <p>Unit price: ₹{item.price.toFixed(2)}</p>
+
+                <p>
+                  Unit Price: ₹{item.price.toFixed(2)}
+                </p>
 
                 <div className="quantity-controls">
                   <button
                     aria-label={`Decrease ${item.name} quantity`}
-                    onClick={() =>
-                      dispatch(
-                        updateQuantity({
-                          id: item.id,
-                          quantity: item.quantity - 1,
-                        })
-                      )
-                    }
+                    onClick={() => handleDecrement(item)}
                   >
-                    −
+                    -
                   </button>
 
                   <span>{item.quantity}</span>
 
                   <button
                     aria-label={`Increase ${item.name} quantity`}
-                    onClick={() =>
-                      dispatch(
-                        updateQuantity({
-                          id: item.id,
-                          quantity: item.quantity + 1,
-                        })
-                      )
-                    }
+                    onClick={() => handleIncrement(item)}
                   >
                     +
                   </button>
@@ -99,15 +122,17 @@ export default function CartItem({ onContinueShopping }) {
 
                 <p>
                   <strong>
-                    Item total: ₹{(item.price * item.quantity).toFixed(2)}
+                    Item Total: ₹
+                    {(item.price * item.quantity).toFixed(2)}
                   </strong>
                 </p>
 
                 <button
-                  className="remove-btn"
-                  onClick={() => dispatch(removeItem(item.id))}
+                  type="button"
+                  className="delete-button"
+                  onClick={() => handleDelete(item)}
                 >
-                  🗑 Remove
+                  Delete
                 </button>
               </div>
             </article>
@@ -118,16 +143,17 @@ export default function CartItem({ onContinueShopping }) {
           <h2>Order Summary</h2>
 
           <div className="summary-line">
-            <span>Total items</span>
+            <span>Total Items</span>
             <strong>{totalItems}</strong>
           </div>
 
           <div className="summary-line total-line">
-            <span>Total amount</span>
+            <span>Total Amount</span>
             <span>₹{totalAmount.toFixed(2)}</span>
           </div>
 
           <button
+            type="button"
             className="primary-btn full-btn"
             onClick={handleCheckout}
           >
@@ -135,10 +161,11 @@ export default function CartItem({ onContinueShopping }) {
           </button>
 
           <button
-            className="secondary-btn full-btn"
-            onClick={onContinueShopping}
+            type="button"
+            className="secondary-btn full-btn get-started-button"
+            onClick={handleContinueShopping}
           >
-            ← Continue Shopping
+            Continue Shopping
           </button>
         </aside>
       </div>
