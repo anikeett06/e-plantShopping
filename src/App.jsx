@@ -1,15 +1,16 @@
 
 import React, { useState } from "react";
-import AboutUs from "./components/AboutUs";
-import ProductList from "./components/ProductList";
-import CartItem from "./components/CartItem";
 import { useSelector } from "react-redux";
+import AboutUs from "./components/AboutUs";
+import ProductList, { Navbar } from "./components/ProductList";
+import CartItem from "./components/CartItem";
 
 export default function App() {
   const [page, setPage] = useState("home");
-  const cartItems = useSelector((state) => state.cart.items);
 
-  const cartCount = cartItems.reduce(
+  const cart = useSelector((state) => state.cart.items);
+
+  const cartCount = cart.reduce(
     (total, item) => total + item.quantity,
     0
   );
@@ -31,33 +32,28 @@ export default function App() {
 
   return (
     <>
-      <nav className="navbar">
-        <div className="brand" onClick={goHome}>
-          🌿 Paradise Nursery
-        </div>
-
-        <div className="nav-links">
-          <button onClick={goHome}>Home</button>
-          <button onClick={goPlants}>Plants</button>
-          <button className="cart-link" onClick={goCart}>
-            🛒 Cart ({cartCount})
-          </button>
-        </div>
-      </nav>
+      <Navbar
+        cartCount={cartCount}
+        onHome={goHome}
+        onPlants={goPlants}
+        onCart={goCart}
+      />
 
       {page === "home" && (
         <>
-          <main className="landing">
+          <main className="background-image">
             <div className="hero-content">
               <p className="eyebrow">GROW YOUR OWN PARADISE</p>
-              <h1>Bring Nature Into Your Home</h1>
+              <h1>Welcome to Paradise Nursery</h1>
               <p>
-                Discover beautiful houseplants that brighten your space,
-                purify your air, and bring everyday moments to life.
-                Your greener home starts here.
+                Discover beautiful houseplants that brighten your home,
+                bring nature closer, and help you create a greener space.
               </p>
-              <button className="primary-btn" onClick={goPlants}>
-                Get Started →
+              <button
+                className="get-started-button"
+                onClick={goPlants}
+              >
+                Get Started
               </button>
             </div>
           </main>
@@ -68,7 +64,7 @@ export default function App() {
             <div className="about-content">
               <h2>Find Your Perfect Plant</h2>
               <p>
-                Explore our collection of air-purifying, easy-care,
+                Explore our collection of air-purifying, low-maintenance,
                 and decorative houseplants.
               </p>
               <button className="primary-btn" onClick={goPlants}>
@@ -79,16 +75,16 @@ export default function App() {
         </>
       )}
 
-      {page === "plants" && (
-        <ProductList onNavigateToCart={goCart} />
-      )}
+      {page === "plants" && <ProductList />}
 
       {page === "cart" && (
         <CartItem onContinueShopping={goPlants} />
       )}
 
       <footer className="site-footer">
-        <p>© {new Date().getFullYear()} Paradise Nursery | Grow Green, Live Green 🌱</p>
+        <p>
+          © {new Date().getFullYear()} Paradise Nursery | Grow Green, Live Green
+        </p>
       </footer>
     </>
   );
